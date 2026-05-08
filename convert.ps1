@@ -1,6 +1,30 @@
 ﻿##################################################################
-#### Update this variable, no touchy anything else.###############
-$freeCadCmdPath = "C:\Program Files\FreeCAD 1.0\bin\freecadcmd.exe"
+#### Update this variable, no touchy anything else. ##############
+#### Set to a specific path to override auto-detection. ##########
+$freeCadCmdPathOverride = $null
+##################################################################
+#### FreeCAD past/present/future versions currently. #############
+$freecadVersions = @("1.2", "1.1", "1.0")
+##################################################################
+$freeCadCmdPath = $null
+
+if ($null -ne $freeCadCmdPathOverride) {
+    $freeCadCmdPath = $freeCadCmdPathOverride
+}
+else {
+    foreach ($version in $freecadVersions) {
+        $path = "C:\Program Files\FreeCAD $version\bin\freecadcmd.exe"
+        if (Test-Path -Path $path) {
+            $freeCadCmdPath = $path
+            break
+        }
+    }
+}
+
+if ($null -eq $freeCadCmdPath) {
+    Write-Error "Could not find freecadcmd.exe in standard installation paths for versions 1.2, 1.1, or 1.0. Please set `$freeCadCmdPathOverride."
+    exit 1
+}
 ##################################################################
 ### no touchy touchy below this line unless you know what you're
 ### doing pls
